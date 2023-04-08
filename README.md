@@ -6,15 +6,13 @@ Currently, this provides simple ticker info and a chat interface. Future plans c
 ## Getting Started  
 - Install python3 https://www.python.org/downloads/
 - Install dependencies
-	- `pip install discord.py`
-	- `pip install yfinance`
-	- `pip install openai`
+	- `pip install -r requirements.txt`
 - Add bot to your server: https://discordpy.readthedocs.io/en/stable/discord.html
 	- Make sure to save the token generated during this process
 - Generate an OpenAI API Key https://platform.openai.com/account/api-keys
 - Populate config.json with these values
 - Run the bot
-	- `python main.py`
+	- `flask run`
 
 ## Example Usage  
 Get stock market info:  
