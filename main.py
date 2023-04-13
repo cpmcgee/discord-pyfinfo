@@ -1,4 +1,3 @@
-import json
 import discord
 import yfinance
 import openai
@@ -6,14 +5,10 @@ import openai
 # Create discord client
 intents = discord.Intents.default()
 intents.message_content = True
-
 client = discord.Client(intents=intents)
 
-# Read in config
-config = json.load(open('config.json'))
-discord_token = config["discord_token"]
-openai.api_key = config["openai_api_key"]
-
+# Runtime config (passed from main thread)
+config = None
 
 @client.event
 async def on_ready():
@@ -24,7 +19,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    elif message.content.startswith('$') and (len(message.content)) > 200:
+    elif message.content.startswith('$') and (len(message.content)) > config['max_bot_query_length']:
         await message.channel.send("idk")
     elif message.content.startswith('$ticker '):
         ticker = message.content.split('$ticker ', 1)[1]
@@ -36,7 +31,7 @@ async def on_message(message):
         await message.channel.send(response)
     elif message.content.startswith('$news '):
         ticker = message.content.split('$news ', 1)[1]
-        response = get_latest_news(ticker, 5)
+        response = get_latest_news(ticker, config['num_news_articles'])
         await message.channel.send(**response)
 
 
@@ -44,12 +39,13 @@ async def on_message(message):
 def get_ticker_info(ticker):
     try:
         ticker = ticker.strip()
-        info = yfinance.Ticker(ticker).fast_info
+        yfticker = yfinance.Ticker(ticker)
+        info = yfticker.fast_info
 
         last, open, high, low = format_prices(ticker, info['lastPrice'], info['open'], info['dayHigh'], info['dayLow'])
 
         res = f"""\
-        \n{ticker.upper()}
+        \n{yfticker.info['shortName']}
         Last:  **{last}**
         Open: {open}
         High:  {high}
@@ -76,15 +72,16 @@ def format_prices(ticker, last, open, high, low):
 
 def get_chat_response(query):
     try:
-        system_msg = {"role": "system", "content": "You must respond in less than 50 words"}
+        custom_msg = {"role": "system", "content": config['custom_prompt']}
+        system_msg = {"role": "system", "content": f"You must respond in less than {config['max_chat_response_words']} words"}
         user_msg = {"role": "user", "content": query}
-        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", max_tokens=65, messages=[system_msg, user_msg])
+        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", max_tokens=int(config['max_chat_response_words']*1.25), messages=[custom_msg, system_msg, user_msg])
         return response.choices[0].message.content
     except:
         return "idk"
     
 def get_latest_news(ticker, n):
-    try:
+    #try:
         yfticker = yfinance.Ticker(ticker.strip())
         name = yfticker.info['shortName']
         articles = yfticker.news[0:n]
@@ -92,8 +89,8 @@ def get_latest_news(ticker, n):
         if not any(embeds):
             raise
         return {"content": "Latest news for " + name, "embeds": embeds}
-    except:
-        return {"content": 'Could not find news articles for ticker: ' + ticker.upper()}
+    #except:
+        #return {"content": 'Could not find news articles for ticker: ' + ticker.upper()}
     
 def get_news_embed(article):
     embed = discord.Embed(title=article['title'], url=article['link'])
@@ -109,8 +106,9 @@ def get_news_embed(article):
     
     return embed
 
-def start():
-    client.run(discord_token)
-
-if __name__ == "__main__":
-    start()
+def start(c):
+    global config
+    config = c
+    print('Starting discord listener')
+    openai.api_key = c["openai_api_key"]
+    client.run(c['discord_token'])
