@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>PyFInfo</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+  </head>
+  <body>
+    <div class="header">
+      <h1>PyFInfo</h1>
+    </div>
+    <div class="settings">
+      <h2>Runtime Settings:</h2>
+      <form method="post">
+        
+        <div class="setting">
+          <label for="max_bot_query_length">max_bot_query_length:</label>
+          <input type="text" id="max_bot_query_length" name="max_bot_query_length" value="{{ max_bot_query_length }}">
+        </div>
+        <div class="setting">
+          <label for="max_chat_response_words">max_chat_response_words:</label>
+          <input type="text" id="max_chat_response_words" name="max_chat_response_words" value="{{ max_chat_response_words }}">
+        </div>
+        <div class="setting">
+          <label for="num_news_articles">num_news_articles:</label>
+          <input type="text" id="num_news_articles" name="num_news_articles" value="{{ num_news_articles }}">
+        </div>
+        <div class="setting">
+          <label for="custom_prompt">custom_prompt:</label>
+          <input type="text" id="custom_prompt" name="custom_prompt" value="{{ custom_prompt }}">
+        </div>
+        <div>
+          <input type="submit" value="Update Settings"/>
+        </div>
+      </form>
+    </div>
+    {% if text %}
+      <p>You entered: {{ text }}</p>
+    {% endif %}
+  </body>
+</html>

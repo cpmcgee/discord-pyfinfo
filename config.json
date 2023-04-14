@@ -4,5 +4,6 @@
   "max_bot_query_length": 200,
   "max_chat_response_words": 50,
   "num_news_articles": 5,
-  "custom_prompt": ""
+  "custom_prompt": "",
+  "ui_password": ""
 }
