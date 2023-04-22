@@ -1,0 +1,2 @@
+Provide a list of the most relevant competitors to the company with ticker: {ticker_symbol}
+You must respond with nothing but a comma-separated list of ticker symbols. 

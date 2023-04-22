@@ -2,6 +2,7 @@ import listener
 from flask import Flask, render_template, request
 import threading
 import json
+import os
 
 config = None
 app = Flask(__name__)
@@ -25,6 +26,7 @@ def index():
 
 def load_config():
     config = json.load(open('config.json'))
+    os.environ["OPENAI_API_KEY"] = config['openai_api_key']
 
     return {
         'discord_token': config['discord_token'],

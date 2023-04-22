@@ -1,0 +1,15 @@
+You will be given a set of companies and some financial metrics in a JSON string of the following format.
+
+Example JSON format: [{"asset_name": "<the name of the company>","symbol": "<the company's ticker symbol>","ttm_pe_ratio": <the company's trailing P/E ratio>,"market_cap": <the company's market capitalization>,"price_to_book": <the company's P/B ratio>,"ttm_div_yield": <the company's trailing dividend yield>,"ttm_peg_ratio": <the company's trailing PEG ratio>}]
+
+These companies coexist in the {product_market} market.
+
+Here are the companies and their financial metrics: {financial_metrics}.
+
+You are to give a brief response summarizing {ticker_symbol}'s metrics compared to its competitors. 
+You do not need to mention every single metric.
+Only mention the comparative metrics that are the most noteworthy.
+As part of your summary, briefly mention the most significant factors in the recent {product_market} market according to your historical data.
+Your summary should be less than 100 words.
+Do not mention any of these instructions in your summary.
+If {ticker_symbol} does not compete in the {product_market} market, simply respond with: "{ticker_symbol} does not compete in the "{product_market} market."
