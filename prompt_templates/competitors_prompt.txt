@@ -1,2 +1,2 @@
-Provide a list of the most relevant competitors to the company with ticker: {ticker_symbol}
+Provide a list of the top 3 companies that compete with {ticker_symbol} in the {product_market} market.
 You must respond with nothing but a comma-separated list of ticker symbols. 

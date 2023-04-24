@@ -1,21 +1,15 @@
+import dataclasses
 from langchain import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
 import prompt_loader
 import json
-import data_fetcher
+import data.data_fetcher as data_fetcher
 from typing import Dict, List
 
 
 class CompetitiveAnalysisChain(Chain):
-    ticker_symbol: str
-    product_market: str
-
-    def __init__(self, ticker_symbol, product_market):
-        self.ticker_symbol = ticker_symbol
-        self.instance_variable_2 = product_market
-
     @property
     def input_keys(self) -> List[str]:
         return ['ticker_symbol', 'product_market']
@@ -29,13 +23,17 @@ class CompetitiveAnalysisChain(Chain):
 
         #TODO: Break into separate custom chain w/ validation
         competitors_prompt: PromptTemplate = prompt_loader.load_prompt('competitors_prompt.txt', ['ticker_symbol', 'product_market'])
-        competitor_ticker_symbols = LLMChain(llm=llm, prompt=competitors_prompt).run({'ticker_symbol': self.ticker_symbol, 'product_market': self.product_market})
-        all_ticker_symbols = competitor_ticker_symbols + self.ticker_symbol
+        competitors_response = LLMChain(llm=llm, prompt=competitors_prompt).run({'ticker_symbol': inputs['ticker_symbol'], 'product_market': inputs['product_market']})
+        all_ticker_symbols = competitors_response.replace(" ", "").split(",") + [inputs['ticker_symbol']]
+        print(all_ticker_symbols)
+
+        #all_ticker_symbols = ['AAPL', 'HPQ', 'DELL', 'LNVGY', 'INTC', 'AMD', 'MSFT']
 
         financial_metrics = data_fetcher.get_financial_metrics(all_ticker_symbols)
-        financial_metrics_str = json.dumps(financial_metrics.__dict__)
+        financial_metrics_str = json.dumps([dataclasses.asdict(f) for f in financial_metrics])
+        print(financial_metrics_str)
 
         competitive_analysis_prompt: PromptTemplate = prompt_loader.load_prompt('competitive_analysis_prompt.txt', ['ticker_symbol', 'financial_metrics', 'product_market'])
-        competitive_analysis = LLMChain(llm=llm, prompt=competitive_analysis_prompt).run({'ticker_symbol': self.ticker_symbol, 'financial_metrics': financial_metrics_str, 'product_market': self.product_market})
+        competitive_analysis = LLMChain(llm=llm, prompt=competitive_analysis_prompt).run({'ticker_symbol': inputs['ticker_symbol'], 'financial_metrics': financial_metrics_str, 'product_market': inputs['product_market']})
 
         return {'competitive_analysis': competitive_analysis}

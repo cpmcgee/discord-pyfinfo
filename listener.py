@@ -3,6 +3,7 @@ import yfinance
 import openai
 from datetime import datetime
 import traceback
+from chains.competitive_analysis_chain import CompetitiveAnalysisChain
 
 # Create discord client
 intents = discord.Intents.default()
@@ -36,10 +37,11 @@ async def on_message(message):
         response = get_latest_news_msg(str(symbol).upper().strip(), config['num_news_articles'])
         await message.channel.send(**response)
     elif message.content.startswith('$ca '):
-        params = message.content.split('$ca ', 2)
+        params = message.content.split(' ', 2)
+        print(params)
         symbol = str(params[1]).upper().strip()
         market = params[2]
-        response = get_earnings_analysis_msg(str(symbol).upper().strip())
+        response = get_competitive_analysis_msg(str(symbol).upper().strip(), market)
         await message.channel.send(response)
 
 
@@ -119,8 +121,9 @@ def get_news_embed(article):
 
 
 def get_competitive_analysis_msg(symbol, market):
-    #TODO: invoke competitive analysis chain
-    return "Competitive Analysis"
+    chain = CompetitiveAnalysisChain(ticker_symbol=symbol, product_market=market)
+    msg = chain.run()['competitive_analysis']
+    return msg
 
 
 

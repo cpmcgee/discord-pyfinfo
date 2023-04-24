@@ -9,5 +9,4 @@ class FinancialMetrics:
     ttm_pe_ratio: float
     market_cap: float
     price_to_book: float
-    ttm_div_yield: float
     ttm_peg_ratio: float
