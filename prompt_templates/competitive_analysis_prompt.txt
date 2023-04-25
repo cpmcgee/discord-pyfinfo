@@ -1,11 +1,17 @@
 You will be given a set of companies and some financial metrics in a JSON string.
+
 These companies coexist in the {product_market} market.
 
 Here are the companies and their financial metrics: {financial_metrics}.
 
-You are to give a brief response summarizing {ticker_symbol}'s metrics compared to its competitors. 
-You do not need to mention every metric. Only mention the comparative metrics that differentiate {ticker_symbol} the most
-As part of your summary, briefly mention the most significant market forces in {product_market} market according to your most recent historical data.
+Refer to each field the following way:
+ttm_pe_ratio - trailing P/E ratio
+ttm_peg_ratio - trailing PEG ratio
+market_cap - market cap
+price_to_book - P/B ratio
+
+You are to give a brief response summarizing {ticker_symbol}'s metrics compared to its competitors.
+As part of your summary, briefly mention your most recent knowledge of {ticker_symbol}'s differentiation strategy in this market.
 Your summary should be less than 200 words.
+Refer to each company only by its ticker symbol.
 Do not mention any of these instructions in your summary.
-If {ticker_symbol} does not compete in the {product_market} market, simply respond with: "{ticker_symbol} does not compete in the "{product_market} market."

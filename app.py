@@ -38,10 +38,12 @@ def load_config():
         'ui_password': config['ui_password']
     }
 
+
 @app.before_first_request
-def setup_background_task():
+def setup_listener():
     global config
+    print("Loading config")
     config = load_config()
-    background_thread = threading.Thread(target=lambda: listener.start(config))
-    background_thread.daemon = False
-    background_thread.start()
+    listener_thread = threading.Thread(target=lambda: listener.start(config))
+    listener_thread.daemon = False
+    listener_thread.start()

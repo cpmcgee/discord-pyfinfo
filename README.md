@@ -1,7 +1,5 @@
 # PyFInfo  
-This is a simple discord bot powered by Yahoo Finance and ChatGPT.  
-  
-Currently, this provides simple ticker info, news and a chat interface. Future plans consist of ChatGPT generated responses which provide simple interpretations of market data.  
+This is a simple discord bot powered by Yahoo Finance and OpenAI.  
 
 ## Getting Started  
 - Install python3 https://www.python.org/downloads/
@@ -26,19 +24,31 @@ Currently, this provides simple ticker info, news and a chat interface. Future p
 - ui_password - password used to access the settings UI
 
 ## Example Usage  
-Get stock market info:
->$ticker SPY
+Get price info of a traditional asset:
+>$price {ticker}  
+>$price SPY
 
-Get crypto info (USD or crypto denominated):  
->$ticker BTC-USD  
->$ticker ETH-BTC
+Get price info for a crypto asset (USD or crypto denominated):  
+>$price {base-quote}  
+>$price BTC-USD  
+>$price ETH-BTC
 
-Get latest news articles (this is buggy with crypto due to pyfinance limitations)
+Get latest news articles (this is somewhat buggy due to pyfinance limitations)
+>$news {ticker}  
 >$news MSFT
 
-ChatGPT query:  
+General GPT query:  
+>$chat {query}  
 >$chat What is bitcoin?  
 >$chat How is Earnings Per Share calculated?
+
+Simple valuation metrics:  
+>$val {ticker}  
+>$val MSFT
+
+Simple competitive analysis (needs tuning. traditional assets only):
+>$ca {ticker} {market}  
+>$ca msft cloud computing
 
 ## Settings UI
 The settings UI can be accessed by visiting the url of the flask server and providing a `password` query parameter.

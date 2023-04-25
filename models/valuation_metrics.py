@@ -3,7 +3,7 @@ from datetime import date
 
 
 @dataclass
-class FinancialMetrics:
+class ValuationMetrics:
     asset_name: str
     symbol: str
     ttm_pe_ratio: float
